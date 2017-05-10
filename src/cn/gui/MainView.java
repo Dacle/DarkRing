@@ -5,7 +5,7 @@ import java.awt.*;
 
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
-import cn.controller.tool.PaintBG;
+import cn.controller.tool.PaintJPanel;
 
 public class MainView {
 	/**
@@ -16,7 +16,7 @@ public class MainView {
 	 * JLayeredPane对象,用于控件分层
 	 * @layer 从底层到上层Default、Palette、Modal、PopUp、Drag
 	 */
-    private static JLayeredPane layeredPane = new JLayeredPane();  
+    public static JLayeredPane layeredPane = new JLayeredPane();  
 	/**
 	 * exit() 窗口关闭按钮
 	 */
@@ -49,6 +49,10 @@ public class MainView {
 	 * 搜索按钮
 	 */
 	public static JLabel searchButton = new JLabel("搜索");
+	/**
+	 * 搜索结果列表和歌词写真显示
+	 */
+	public static PaintJPanel mainResult = new PaintJPanel();
 	
 	public static void main(String[] args) {
 		MainView window = new MainView();
@@ -68,15 +72,31 @@ public class MainView {
 	 */
 	private void initialize() {
 		
+		//窗口
 		frame.setUndecorated(true);
 		frame.setBounds(100, 100, 450, 300);
 		frame.getContentPane().setLayout(null);
 		frame.setLayeredPane(layeredPane);
 		
-		PaintBG BGP = new PaintBG(new ImageIcon("image/background.png").getImage());
+		//背景
+		PaintJPanel BGP = new PaintJPanel(new ImageIcon("image/background.png").getImage());
 		BGP.setBounds(0, 0, frame.getWidth(), frame.getHeight());
 		layeredPane.add(BGP,JLayeredPane.DEFAULT_LAYER);
 		
+		//菜单栏
+		initMenu();
+		
+		//列表
+		initList();
+		
+		//主显示栏：搜索结果、写真、歌词
+		initResult();
+	}
+	
+	/**
+	 * 初始化菜单栏
+	 */
+	private void initMenu(){
 		ImageIcon closeIcon = new ImageIcon("image/close_static.png");
 		closeButton.setBounds(430, 5, closeIcon.getIconWidth(),closeIcon.getIconWidth());
 		closeButton.setIcon(closeIcon);
@@ -122,7 +142,22 @@ public class MainView {
 		searchField.setOpaque(false);
 		layeredPane.add(searchField,JLayeredPane.PALETTE_LAYER);
 		searchField.addMouseListener(new searchFieldListener());
+	}
+	
+	/**
+	 * 初始化歌曲列表
+	 */
+	private void initList(){
 		
-		
+	}
+	
+	/**
+	 * 初始化主显示栏:搜索结果、写真、歌词
+	 */
+	private void initResult(){
+		Image image = new ImageIcon("image/timg.jpg").getImage();
+		mainResult.setBGP(image);
+		mainResult.setBounds(140, 30, frame.getWidth()-140, frame.getHeight()-70);
+		layeredPane.add(mainResult,JLayeredPane.PALETTE_LAYER);
 	}
 }

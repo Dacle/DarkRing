@@ -3,7 +3,6 @@ package cn.driver.resources.internet;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,18 +19,22 @@ import org.apache.http.util.EntityUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-
+/**
+ * 网络连接类
+ * @author Dacle
+ * @since 2017-5-10
+ */
 public class HttpUtil {
 
 	/*
 	 * 通过关键词，获取列表
 	 * String keywords
 	 */
-	public JSONArray GetBaiDuMp3(String keywords){
+	public JSONArray searchMusicInfoList(String keywords){
 		//		String url="http://mp3.baidu.com/dev/api/?tn=getinfo&ct=0&word=%E6%B5%81%E6%B5%AA%E8%AE%B0&ie=utf-8&format=json";
 		  String body = null;
 		StringBuffer sb = new StringBuffer();
-		sb.append("http://s.music.163.com/search/get/?type=1&limit=5&s=");
+		sb.append("http://s.music.163.com/search/get/?type=1&limit=9&s=");
 		
 		System.out.println(keywords+"  GetBaiDuMp3");
 		
@@ -74,8 +77,9 @@ public class HttpUtil {
 		body=body.replace(']', '}');
 		body="["+body+"]";*/
 		System.out.println("总共"+body);
-		JSONArray ja = JSONArray.fromObject(body);
-		return ja;
+		JSONArray musicInfoList = JSONArray.fromObject(body);
+		System.out.println("name"+musicInfoList.getJSONObject(1).getString("name"));
+		return musicInfoList;
 	}
 	
 	/**
@@ -139,7 +143,7 @@ public class HttpUtil {
 //					down.down();
 				//	Down.down(s, name, "d:\\1\\");   //下载文件
 					ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
-					Down down=new Down(s, name,"E:\\Music\\tempDarkRing\\","mp3"); //下载歌曲到E盘
+					Down down=new Down(s, name,"E:\\Music\\","mp3"); //下载歌曲到E盘
 					fixedThreadPool.execute(down);
 					if(!"".equals(songlrc) && null!=songlrc){
 						StringBuffer lrc=new StringBuffer();
@@ -167,12 +171,12 @@ public class HttpUtil {
 		
 	}
 	
-	public void downMp3(String mp3) {
+	public void downMp3(String musicName) {
 		
-		JSONArray jsonlist=GetBaiDuMp3(mp3);
+		JSONArray jsonlist=searchMusicInfoList(musicName);
 		for(int i=0;i<jsonlist.size();i++){
 			JSONObject object = jsonlist.getJSONObject(i);
-			System.out.println(mp3+"  GetDownloadMp3Url "+object.getString("name")+"  object  "+object.toString());
+			System.out.println(musicName+"  GetDownloadMp3Url "+object.getString("name")+"  object  "+object.toString());
 				
 			GetDownloadMp3Url(object.getString("song_id"),2);
 

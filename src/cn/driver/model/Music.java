@@ -15,9 +15,9 @@ public class Music {
 	 */
 	private String musicName;
 	/**
-	 * Music作者，一般指歌手，解析自音乐文件
+	 * Music艺术家，一般指歌手，解析自音乐文件
 	 */
-	private String author;
+	private String artist;
 	/**
 	 * Music绝对路径，在硬盘上的位置
 	 */
@@ -28,10 +28,10 @@ public class Music {
 	private String MusicLength;
 	
 	public String getAuthor() {
-		return author;
+		return artist;
 	}
 	public void setAuthor(String author) {
-		this.author = author;
+		this.artist = author;
 	}
 	public int getMusicId() {
 		return musicId;

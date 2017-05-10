@@ -10,18 +10,28 @@ import javax.swing.JPanel;
  * @author Dacle
  * 
  */
-public class PaintBG extends JPanel{
+public class PaintJPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 	
-	Image im;  
+	private Image im;  
 	
-    public PaintBG(Image im)  
+    public PaintJPanel(Image im)  
     {  
         this.im=im;  
         this.setOpaque(true);  
-    }  
-    //Draw the back ground.  
+    }
+    
+    public PaintJPanel(){
+    	this.setOpaque(true);
+    } 
+    /**
+     * 为当前JPanel对象设置背景图片
+     * @param im
+     */
+    public void setBGP(Image im){
+    	this.im=im;
+    }
     public void paintComponent(Graphics g)
     {  
         super.paintComponents(g);  
