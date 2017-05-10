@@ -1,4 +1,4 @@
-package cn.controller.MouseListener;
+package cn.controller.listener.MouseListener;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
