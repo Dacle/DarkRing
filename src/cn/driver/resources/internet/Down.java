@@ -7,10 +7,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Down implements Runnable{
-
+	/**
+	 * 下载地址
+	 */
 	private String url1;
+	/**
+	 * 文件名称
+	 */
 	private String name;
+	/**
+	 * 文件路径
+	 */
 	private String path;
+	/**
+	 * 文件类型
+	 */
 	private String type;
 
 

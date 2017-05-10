@@ -44,7 +44,7 @@ public class MainView {
 	/**
 	 * 搜索框
 	 */
-	public static JFormattedTextField searchField = new JFormattedTextField("歌曲名或歌手名");
+	public static JFormattedTextField searchField = new JFormattedTextField("虹之间");
 	/**
 	 * 搜索按钮
 	 */
