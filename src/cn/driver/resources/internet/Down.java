@@ -52,18 +52,18 @@ public class Down implements Runnable{
 		   /* String  contentType=conn.getHeaderField("Content-Type");
 		    System.out.println(contentType);*/
 		    String   filePath = path + name +"."+type;
-			 System.out.println("下载到"+filePath);
+			System.out.println("下载到"+filePath);
 			BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
 			FileOutputStream fos = new FileOutputStream(new File(filePath));
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[10240];
 			int size = 0;
+			System.out.println(name+" 正在下载。。。。 ");
 			while ((size = bis.read(buf)) != -1){
 			    fos.write(buf, 0, size);
-			    System.out.println(size);
 			}
 			fos.close();
 			bis.close();
-			 System.out.println("下载结束");
+			System.out.println(name+"下载结束");
 			conn.disconnect();
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -2,9 +2,12 @@ package cn.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
+import cn.gui.musicList.LocalListTitle;
 
 public class MainView extends JFrame{
 	/**
@@ -50,6 +53,7 @@ public class MainView extends JFrame{
 	public static JLabel searchButton = new JLabel("搜索");
 	/**
 	 * 搜索结果列表和歌词写真显示
+	 * 层数：PALETTE_LAYER
 	 */
 	public static PaintJPanel mainResult = new PaintJPanel();
 	/**
@@ -87,7 +91,7 @@ public class MainView extends JFrame{
 	/**
 	 * 默认列表
 	 */
-	public static PaintJPanel defaultList = new PaintJPanel(new ImageIcon("image/defaultList.png").getImage());
+	public static LocalListTitle defaultList = new LocalListTitle();
 	
 	private static MainView window;
 	
@@ -142,7 +146,12 @@ public class MainView extends JFrame{
 		closeButton.setIcon(closeIcon);
 		closeButton.setOpaque(false);
 		layeredPane.add(closeButton,JLayeredPane.PALETTE_LAYER);
-		closeButton.addMouseListener(new CloseButtonListener());
+		closeButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				System.exit(0);
+			}
+		});
 		
 		ImageIcon minimizeIcon = new ImageIcon("image/minimize.png");
 		minimizeButton.setBounds(394, 5, minimizeIcon.getIconWidth(),minimizeIcon.getIconWidth());
@@ -188,7 +197,14 @@ public class MainView extends JFrame{
 	 * 初始化歌曲列表
 	 */
 	private void initList(){
+		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
+		jTree.setBounds(0, 30, 140, 230);
+		jTree.setOpaque(false);
 		
+		jTree.add(defaultList,JLayeredPane.MODAL_LAYER);
+		defaultList.setBounds(0, 0, 140, 20);
+		defaultList.setLayout(new BorderLayout());
+		defaultList.addMouseListener(new LocalListTitleListener());
 	}
 	
 	/**
@@ -200,6 +216,10 @@ public class MainView extends JFrame{
 		mainResult.setBounds(140, 30, this.getWidth()-140, this.getHeight()-70);
 		layeredPane.add(mainResult,JLayeredPane.PALETTE_LAYER);
 	}
+	
+	/**
+	 * 初始化播放菜单栏
+	 */
 	private void initPlayMenu(){
 		ImageIcon playIcon = new ImageIcon("image/play.png");
 		playButton.setIcon(playIcon);
@@ -242,16 +262,6 @@ public class MainView extends JFrame{
 		volumeSlider.setPaintLabels(true);
 		volumeSlider.setSnapToTicks(true);
 		layeredPane.add(volumeSlider,JLayeredPane.MODAL_LAYER);
-		
-		jTree.setBounds(0, 30, 140, 230);
-		jTree.setOpaque(false);
-		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
-		
-		jTree.add(defaultList);
-		jTree.setBackground(Color.white);
-		defaultList.setOpaque(false);
-		defaultList.setBounds(jTree.getX(),jTree.getY(), jTree.getWidth(), 20);
-		layeredPane.add(defaultList,JLayeredPane.MODAL_LAYER);
 		
 	}
 	public static void setWindowVisible(boolean b){

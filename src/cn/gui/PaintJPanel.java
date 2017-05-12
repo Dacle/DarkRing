@@ -24,7 +24,7 @@ public class PaintJPanel extends JPanel{
         this.setOpaque(opaque);  
     }
     public PaintJPanel(Image im)  
-    {  
+    {
         this.im=im;
         this.setOpaque(true);
     }

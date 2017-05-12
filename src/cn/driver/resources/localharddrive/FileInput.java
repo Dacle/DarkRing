@@ -1,72 +1,47 @@
 package cn.driver.resources.localharddrive;
 
-import java.io.File;
+import java.awt.Frame;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import cn.driver.play.Player1;
+import net.sf.json.JSONObject;
 
 /**
  * FileInput 从硬盘上获取Music文件
  */
-public class FileInput
-{
-   private JFileChooser fdialog=null;
-   private File f[];
-   private String name[];
-   private JFrame jf;
-   public FileInput(JFrame jf)
-   {    
-       this.jf=jf;
-       fdialog=new JFileChooser("");
-       fdialog.setFileFilter(new FileFilter()
-       {
-		
-		@Override
-		public String getDescription() {
-			// TODO Auto-generated method stub
-			return ".mp3";
-		}
-		
-		@Override
-		public boolean accept(File f) {
-			// TODO Auto-generated method stub
-			if (f.isDirectory())return true;
-			return f.getName().endsWith(".mp3")||
-			f.getName().endsWith(".jpg")||f.getName().endsWith(".png");
-		}
-
-	});
-       fdialog.setAcceptAllFileFilterUsed(false);
-       
-		 fdialog.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-	       fdialog.setMultiSelectionEnabled(true);
-      
-   }
-   public void open()
-   {
-      f=null;
-      int result = fdialog.showOpenDialog(jf);
-      if(result == JFileChooser.APPROVE_OPTION){
-    	  
-    	  f=fdialog.getSelectedFiles();
-    	  
-      }
-   }
-   public String[] getFileNames()
-   {
-   		name=null;
-   		if(f!=null)
-   		{
-   			name=new String[f.length];
-   		    for(int i=0;i<f.length;i++)
-   		    name[i]=f[i].getPath();
-   		}
-   		return name;
-   }
-   public File[] getFiles()
-   {
-   		return f;
-   }
+public class FileInput extends Frame{
    
+	private static final long serialVersionUID = 1L;
+	private JFileChooser chooser;
+
+	private FileNameExtensionFilter filter;
+	
+	private JSONObject object;
+	
+	public FileInput(){
+		filter = new FileNameExtensionFilter("music files", "mp3", "ape","flac","wav");
+		chooser = new JFileChooser("E:\\Music\\");
+		object = new JSONObject();
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		String path = chooser.getSelectedFile().getPath();
+		String filename = chooser.getSelectedFile().getName();
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	       System.out.println("You chose to open this file: " + path);
+	    }
+	    object.put("name", filename.substring(filename.indexOf(" - ")+3,filename.indexOf(".")));
+	    object.put("artists", filename.substring(0, filename.indexOf(" - ")));
+	    object.put("path", path);
+	    System.out.println(object.toString());
+	    ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
+		Player1 play=new Player1(object.getString("path"));
+		fixedThreadPool.execute(play);
+   }
+	public JSONObject getFileInfo(){
+		return object;
+	}
 }

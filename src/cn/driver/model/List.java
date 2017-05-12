@@ -1,8 +1,7 @@
 package cn.driver.model;
 
-import java.util.ArrayList;
-
-import cn.driver.model.Music;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * 列表实体类
@@ -26,7 +25,7 @@ public class List {
 	/**
 	 * 音乐列表
 	 */
-	private ArrayList<Music> list;
+	private JSONArray list;
 	
 	/**
 	 * 构造函数
@@ -36,17 +35,19 @@ public class List {
 	public List(int listId,String listName){
 		this.listId=listId;
 		this.listName=listName;
+		this.list = new JSONArray();
+		this.listSize=list.size();
 	}
-	public ArrayList<Music> getList() {
+	
+	public JSONObject getJSONObject(int index){
+		return list.getJSONObject(index);
+	}
+	public JSONArray getList() {
 		return this.list;
 	}
 
-	public void setList(ArrayList<Music> list) {
+	public void setList(JSONArray list) {
 		this.list = list;
-	}
-
-	public Music get(int id){
-		return list.get(id);
 	}
 	
 	public int getListId() {

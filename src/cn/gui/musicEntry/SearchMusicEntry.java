@@ -1,4 +1,4 @@
-package cn.gui;
+package cn.gui.musicEntry;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,9 +10,16 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
 import cn.driver.resources.internet.Down;
+import cn.gui.PaintJPanel;
 import net.sf.json.JSONObject;
-
-public class MusicEntry extends PaintJPanel{
+/**
+ * 继承PaintJpanel类，作为搜索结果单条目对象，层数高于SearchList,为POPUP_LAYER
+ * @author Dacle
+ * @since 2017-5-11
+ * @modify by Dacle
+ *
+ */
+public class SearchMusicEntry extends PaintJPanel{
 	
 	/**
 	 * 
@@ -25,10 +32,9 @@ public class MusicEntry extends PaintJPanel{
 	private JLabel addToList = new JLabel();
 	private JLabel download = new JLabel();
 	
-	JSONObject musicJson;
-	int [] a= new int[2];
+	private JSONObject musicJson;
 	
-	public MusicEntry(JSONObject musicJson,int [] a){
+	public SearchMusicEntry(JSONObject musicJson){
 		super(new ImageIcon("image/musicEntry.png").getImage());
 		
 		this.musicName = new JLabel();
@@ -39,52 +45,48 @@ public class MusicEntry extends PaintJPanel{
 		this.download = new JLabel();
 		
 		this.musicJson = musicJson;
-		this.a=a;
 		initMusicEntry();
 	}
 	
 	public void initMusicEntry(){
-		int x = a[0];
-		int y = a[1];
 		
 		musicName.setText(musicJson.getString("name"));
-		this.add(musicName,JLayeredPane.MODAL_LAYER);
-		this.musicName.setOpaque(false);
-		System.out.println(musicName.getText());
-		this.musicName.setBounds(0,y,60,20);
+		this.add(musicName,JLayeredPane.DRAG_LAYER);
+		musicName.setOpaque(false);
+		musicName.setBounds(0,0,60,20);
 		
 		String artistTemp = musicJson.getString("artists");
-		this.add(aritst,JLayeredPane.MODAL_LAYER);
+		this.add(aritst,JLayeredPane.DRAG_LAYER);
 		artistTemp=artistTemp.substring(artistTemp.indexOf("name\":\"")+7, artistTemp.indexOf("\",\"picUr"));
-		this.aritst.setText(artistTemp);
-		this.aritst.setBounds(x+60, y, 60, 20);
-		this.aritst.setOpaque(false);
-		System.out.println(aritst.getText());
+		aritst.setText(artistTemp);
+		aritst.setBounds(60, 0, 60, 20);
+		aritst.setOpaque(false);
 		
 		
 		String albumTemp = musicJson.getString("album");
-		this.add(album,JLayeredPane.MODAL_LAYER);
+		this.add(album,JLayeredPane.DRAG_LAYER);
 		albumTemp=albumTemp.substring(albumTemp.indexOf("name\":\"")+7, albumTemp.indexOf("\",\"art"));
 		album.setText(albumTemp);
-		album.setBounds(x+120, y, 115, 20);
 		album.setOpaque(false);
-		System.out.println(album.getText());
+		album.setBounds(120, 0, 115, 20);
 		
 		play.setIcon(new ImageIcon("image/little_play.png"));
-		super.add(play,JLayeredPane.MODAL_LAYER);
+		this.add(play,JLayeredPane.DRAG_LAYER);
 		play.setOpaque(false);
-		play.setBounds(x+235,y, 25, 20);
+		play.setToolTipText("播放");
+		play.setBounds(235,0, 25, 20);
 		
 		addToList.setIcon(new ImageIcon("image/addto.png"));
-		super.add(addToList,JLayeredPane.MODAL_LAYER);
+		this.add(addToList,JLayeredPane.DRAG_LAYER);
 		addToList.setOpaque(false);
-		addToList.setBounds(x+260, y, 25, 20);
+		addToList.setToolTipText("添加到");
+		addToList.setBounds(260, 0, 25, 20);
 	
 		download.setIcon(new ImageIcon("image/download.png"));
-		super.add(download,JLayeredPane.MODAL_LAYER);
+		this.add(download,JLayeredPane.DRAG_LAYER);
 		download.setOpaque(false);
-		download.setBounds(x+285, y, 25, 20);
 		download.setToolTipText("下载");
+		download.setBounds(285, 0, 25, 20);
 		
 		download.addMouseListener(new MouseAdapter() {
 			@Override

@@ -54,8 +54,8 @@ public class HttpUtil {
 		CloseableHttpResponse response=null;
 		try {
 			response = h.execute(get);
-			  HttpEntity output = response.getEntity();
-			  body = EntityUtils.toString(output, Consts.UTF_8);
+			HttpEntity output = response.getEntity();
+			body = EntityUtils.toString(output, Consts.UTF_8);
 			  
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -70,15 +70,9 @@ public class HttpUtil {
 			}
 		
 		}
-		System.out.println("总共"+body);
 		//对字符串进行截取，以适应JSON.parseArray的格式
 		body=body.substring(body.indexOf("ongs\":")+6, body.lastIndexOf("},\"co"));
-		/*body=body.replace('[', '{');
-		body=body.replace(']', '}');
-		body="["+body+"]";*/
-		System.out.println("总共"+body);
 		JSONArray musicInfoList = JSONArray.fromObject(body);
-		System.out.println("name"+musicInfoList.getJSONObject(1).getString("name"));
 		return musicInfoList;
 	}
 	

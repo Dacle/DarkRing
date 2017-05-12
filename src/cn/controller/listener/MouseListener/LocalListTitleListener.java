@@ -3,13 +3,14 @@ package cn.controller.listener.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
-public class DownloadListener implements MouseListener{
-
+public class LocalListTitleListener implements MouseListener{
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		if(e.getClickCount() == 1){
+			
+		}else if(e.getClickCount() == 2){
+		}
 	}
 
 	@Override
