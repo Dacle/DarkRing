@@ -5,18 +5,17 @@ import java.awt.*;
 
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
-import cn.controller.tool.PaintJPanel;
 
-public class MainView {
+public class MainView extends JFrame{
 	/**
-	 * frame 窗口对象
+	 * 
 	 */
-	public static JFrame frame = new JFrame();
+	private static final long serialVersionUID = 1L;
 	/**
 	 * JLayeredPane对象,用于控件分层
 	 * @layer 从底层到上层Default、Palette、Modal、PopUp、Drag
 	 */
-    public static JLayeredPane layeredPane = new JLayeredPane();  
+    public JLayeredPane layeredPane = new JLayeredPane();  
 	/**
 	 * exit() 窗口关闭按钮
 	 */
@@ -53,11 +52,49 @@ public class MainView {
 	 * 搜索结果列表和歌词写真显示
 	 */
 	public static PaintJPanel mainResult = new PaintJPanel();
+	/**
+	 * 播放按钮
+	 */
+	public static JLabel playButton = new JLabel();
+	/**
+	 * 停止按钮
+	 */
+	public static JLabel stopButton = new JLabel();
+	/**
+	 * 上一曲
+	 */
+	public static JLabel lastMusicButton = new JLabel();
+	/**
+	 * 下一曲
+	 */
+	public static JLabel nextMusicButton = new JLabel();
+	/**
+	 * 音乐进度条
+	 */
+	public static JSlider musicSlider = new JSlider();
+	/**
+	 * 音量图标
+	 */
+	public static JLabel volumeButton = new JLabel();
+	/**
+	 * 音量滑块
+	 */
+	public static JSlider volumeSlider = new JSlider();
+	/**
+	 * 列表框,一个JPanel对象是一个歌单
+	 */
+	public static JList<JPanel> jTree = new JList<JPanel>();
+	/**
+	 * 默认列表
+	 */
+	public static PaintJPanel defaultList = new PaintJPanel(new ImageIcon("image/defaultList.png").getImage());
+	
+	private static MainView window;
 	
 	public static void main(String[] args) {
-		MainView window = new MainView();
-		window.frame.setVisible(true);
-				
+		window = new MainView();
+		window.setVisible(true);
+		
 	}
 
 	/**
@@ -73,14 +110,14 @@ public class MainView {
 	private void initialize() {
 		
 		//窗口
-		frame.setUndecorated(true);
-		frame.setBounds(100, 100, 450, 300);
-		frame.getContentPane().setLayout(null);
-		frame.setLayeredPane(layeredPane);
+		this.setUndecorated(true);
+		this.setBounds(100, 100, 450, 300);
+		this.getContentPane().setLayout(null);
+		this.setLayeredPane(layeredPane);
 		
 		//背景
 		PaintJPanel BGP = new PaintJPanel(new ImageIcon("image/background.png").getImage());
-		BGP.setBounds(0, 0, frame.getWidth(), frame.getHeight());
+		BGP.setBounds(0, 0, this.getWidth(), this.getHeight());
 		layeredPane.add(BGP,JLayeredPane.DEFAULT_LAYER);
 		
 		//菜单栏
@@ -91,6 +128,9 @@ public class MainView {
 		
 		//主显示栏：搜索结果、写真、歌词
 		initResult();
+		
+		//初始化播放菜单：播放、暂停、继续、音量
+		initPlayMenu();
 	}
 	
 	/**
@@ -109,7 +149,7 @@ public class MainView {
 		minimizeButton.setIcon(minimizeIcon);
 		minimizeButton.setOpaque(false);
 		layeredPane.add(minimizeButton,JLayeredPane.PALETTE_LAYER);
-		minimizeButton.addMouseListener(new minimizeButtonListener());
+		minimizeButton.addMouseListener(new MinimizeButtonListener());
 		
 		ImageIcon maximizeIcon = new ImageIcon("image/maximize.png");
 		maximizeButton.setBounds(410, 5, maximizeIcon.getIconWidth(),maximizeIcon.getIconWidth());
@@ -122,7 +162,7 @@ public class MainView {
 		settingButton.setIcon(settingIcon);
 		settingButton.setOpaque(false);
 		layeredPane.add(settingButton,JLayeredPane.PALETTE_LAYER);
-		settingButton.addMouseListener(new settingButtonListener());
+		settingButton.addMouseListener(new SettingButtonListener());
 		
 		ImageIcon logoIcon = new ImageIcon("image/trayIcon.png");
 		logo.setBounds(3, 5, logoIcon.getIconWidth(),logoIcon.getIconWidth());
@@ -135,13 +175,13 @@ public class MainView {
 		searchButton.setIcon(searchIcon);
 		searchButton.setOpaque(false);
 		layeredPane.add(searchButton,JLayeredPane.PALETTE_LAYER);
-		searchButton.addMouseListener(new searchButtonListener());
+		searchButton.addMouseListener(new SearchButtonListener());
 		searchButton.addKeyListener(new MainKeyListener());
 		
 		searchField.setBounds(150, 3, 120, 20);
 		searchField.setOpaque(false);
 		layeredPane.add(searchField,JLayeredPane.PALETTE_LAYER);
-		searchField.addMouseListener(new searchFieldListener());
+		searchField.addMouseListener(new SearchFieldListener());
 	}
 	
 	/**
@@ -157,7 +197,64 @@ public class MainView {
 	private void initResult(){
 		Image image = new ImageIcon("image/timg.jpg").getImage();
 		mainResult.setBGP(image);
-		mainResult.setBounds(140, 30, frame.getWidth()-140, frame.getHeight()-70);
+		mainResult.setBounds(140, 30, this.getWidth()-140, this.getHeight()-70);
 		layeredPane.add(mainResult,JLayeredPane.PALETTE_LAYER);
+	}
+	private void initPlayMenu(){
+		ImageIcon playIcon = new ImageIcon("image/play.png");
+		playButton.setIcon(playIcon);
+		playButton.setBounds(50, 263, 32, 32);
+		playButton.setOpaque(false);
+		layeredPane.add(playButton,JLayeredPane.PALETTE_LAYER);
+		playButton.addMouseListener(new PlayButtonListener());
+		
+		ImageIcon lastIcon = new ImageIcon("image/lastMusic.png");
+		lastMusicButton.setIcon(lastIcon);
+		lastMusicButton.setBounds(10, 263, 32, 32);
+		lastMusicButton.setOpaque(false);
+		layeredPane.add(lastMusicButton,JLayeredPane.PALETTE_LAYER);
+		lastMusicButton.addMouseListener(new LastMusicButtonListener());
+
+		ImageIcon nextIcon = new ImageIcon("image/nextMusic.png");
+		nextMusicButton.setIcon(nextIcon);
+		nextMusicButton.setBounds(90, 263, 32, 32);
+		nextMusicButton.setOpaque(false);
+		layeredPane.add(nextMusicButton,JLayeredPane.PALETTE_LAYER);
+		nextMusicButton.addMouseListener(new LastMusicButtonListener());
+		
+		musicSlider.setBounds(140, 278, 250, 4);
+		musicSlider.setOpaque(true);
+		musicSlider.setPaintTicks(true);
+		musicSlider.setPaintLabels(true);
+		musicSlider.setSnapToTicks(true);
+		musicSlider.setValue(0);
+		layeredPane.add(musicSlider,JLayeredPane.PALETTE_LAYER);
+		
+		ImageIcon volumeIcon = new ImageIcon("image/volume.png");
+		volumeButton.setBounds(420, 272, volumeIcon.getIconWidth(),volumeIcon.getIconWidth());
+		volumeButton.setIcon(volumeIcon);
+		volumeButton.setOpaque(false);
+		layeredPane.add(volumeButton,JLayeredPane.PALETTE_LAYER);
+		
+		volumeSlider.setBounds(428, 202, 3, 70);
+		volumeSlider.setOpaque(false);
+		volumeSlider.setOrientation(SwingConstants.VERTICAL);
+		volumeSlider.setPaintLabels(true);
+		volumeSlider.setSnapToTicks(true);
+		layeredPane.add(volumeSlider,JLayeredPane.MODAL_LAYER);
+		
+		jTree.setBounds(0, 30, 140, 230);
+		jTree.setOpaque(false);
+		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
+		
+		jTree.add(defaultList);
+		jTree.setBackground(Color.white);
+		defaultList.setOpaque(false);
+		defaultList.setBounds(jTree.getX(),jTree.getY(), jTree.getWidth(), 20);
+		layeredPane.add(defaultList,JLayeredPane.MODAL_LAYER);
+		
+	}
+	public static void setWindowVisible(boolean b){
+		window.setVisible(b);
 	}
 }

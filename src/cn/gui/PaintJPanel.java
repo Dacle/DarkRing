@@ -1,4 +1,4 @@
-package cn.controller.tool;
+package cn.gui;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -12,16 +12,22 @@ import javax.swing.JPanel;
  */
 public class PaintJPanel extends JPanel{
 	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
+	protected Image im;  
 	
-	private Image im;  
-	
-    public PaintJPanel(Image im)  
+    public PaintJPanel(Image im,boolean opaque)  
     {  
         this.im=im;  
-        this.setOpaque(true);  
+        this.setOpaque(opaque);  
     }
-    
+    public PaintJPanel(Image im)  
+    {  
+        this.im=im;
+        this.setOpaque(true);
+    }
     public PaintJPanel(){
     	this.setOpaque(true);
     } 

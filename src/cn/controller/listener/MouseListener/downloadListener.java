@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
-public class downloadListener implements MouseListener{
+public class DownloadListener implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {

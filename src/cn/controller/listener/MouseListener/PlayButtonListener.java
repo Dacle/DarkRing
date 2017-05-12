@@ -3,11 +3,16 @@ package cn.controller.listener.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class SettingButtonListener implements MouseListener{
+import javax.swing.ImageIcon;
+
+import cn.gui.MainView;
+
+public class PlayButtonListener implements MouseListener{
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
+		MainView.playButton.setIcon(new ImageIcon("image/play_click.png"));
 		
 	}
 

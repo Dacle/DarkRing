@@ -14,13 +14,13 @@ import cn.gui.MainView;
  * @author Dacle
  *
  */
-public class minimizeButtonListener implements MouseListener{
+public class MinimizeButtonListener implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		// ´°¿ÚÒş²Ø
-		MainView.frame.setVisible(false);
+		MainView.setWindowVisible(false);
 		/**
 		 * ÏµÍ³ÍĞÅÌÊµÀı
 		 */
@@ -43,7 +43,7 @@ public class minimizeButtonListener implements MouseListener{
 				public void mouseClicked(MouseEvent e){
 					if(e.getClickCount() == 2){//Ë«»÷
 						//ÍĞÅÌ´°¿ÚÔÙÏÖ
-						MainView.frame.setVisible(true);
+						MainView.setWindowVisible(true);
 						//ÍĞÅÌÍ¼±êÉ¾³ı
 						systemTray.remove(MainView.trayIcon);
 					}

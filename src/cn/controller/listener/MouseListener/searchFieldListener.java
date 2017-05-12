@@ -5,7 +5,7 @@ import java.awt.event.MouseListener;
 
 import cn.gui.MainView;
 
-public class searchFieldListener implements MouseListener{
+public class SearchFieldListener implements MouseListener{
 	private String temp = null;
 	@Override
 	public void mouseClicked(MouseEvent e) {

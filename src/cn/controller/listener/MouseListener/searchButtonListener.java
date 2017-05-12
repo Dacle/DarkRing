@@ -9,7 +9,7 @@ import cn.controller.listCtrl.SearchListCtrl;
 import cn.driver.resources.internet.HttpUtil;
 import cn.gui.MainView;
 
-public class searchButtonListener  implements MouseListener{
+public class SearchButtonListener  implements MouseListener{
 	String key = null;
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -20,8 +20,7 @@ public class searchButtonListener  implements MouseListener{
 		HttpUtil hutil = new HttpUtil();
 		System.out.println(key+" 线程");
 		//根据输入的关键词，从网易云音乐服务器获取音乐信息列表
-		SearchListCtrl slc = new SearchListCtrl(hutil.searchMusicInfoList(key));
-		slc.dealList();
+		new SearchListCtrl(hutil.searchMusicInfoList(key)).dealList();
 	}
 
 	@Override
