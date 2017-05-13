@@ -5,9 +5,13 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import cn.controller.listCtrl.Lists;
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
 import cn.gui.musicList.LocalListTitle;
+import net.sf.json.JSONArray;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class MainView extends JFrame{
 	/**
@@ -88,10 +92,6 @@ public class MainView extends JFrame{
 	 * 列表框,一个JPanel对象是一个歌单
 	 */
 	public static JList<JPanel> jTree = new JList<JPanel>();
-	/**
-	 * 默认列表
-	 */
-	public static LocalListTitle defaultList = new LocalListTitle();
 	
 	private static MainView window;
 	
@@ -200,11 +200,15 @@ public class MainView extends JFrame{
 		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
 		jTree.setBounds(0, 30, 140, 230);
 		jTree.setOpaque(false);
-		
-		jTree.add(defaultList,JLayeredPane.MODAL_LAYER);
-		defaultList.setBounds(0, 0, 140, 20);
-		defaultList.setLayout(new BorderLayout());
-		defaultList.addMouseListener(new LocalListTitleListener());
+		Lists ls = new Lists();
+		JSONArray ja = ls.readLists();
+		for(int i=0;i<ja.size();i++){
+			LocalListTitle defaultList = new LocalListTitle(ja.getJSONObject(i));
+			jTree.add(defaultList,JLayeredPane.MODAL_LAYER);
+			defaultList.setBounds(0, i*20, 140, 20);
+			defaultList.setLayout(new BorderLayout());
+			defaultList.addMouseListener(new LocalListTitleListener());
+		}
 	}
 	
 	/**
@@ -221,12 +225,16 @@ public class MainView extends JFrame{
 	 * 初始化播放菜单栏
 	 */
 	private void initPlayMenu(){
-		ImageIcon playIcon = new ImageIcon("image/play.png");
-		playButton.setIcon(playIcon);
+		playButton.setIcon(new ImageIcon("image/play.png"));
 		playButton.setBounds(50, 263, 32, 32);
 		playButton.setOpaque(false);
 		layeredPane.add(playButton,JLayeredPane.PALETTE_LAYER);
-		playButton.addMouseListener(new PlayButtonListener());
+		playButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				playButton.setIcon(new ImageIcon("image/play_click.png"));
+			}
+		});
 		
 		ImageIcon lastIcon = new ImageIcon("image/lastMusic.png");
 		lastMusicButton.setIcon(lastIcon);

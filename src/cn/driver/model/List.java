@@ -11,10 +11,6 @@ import net.sf.json.JSONObject;
  */
 public class List {
 	/**
-	 * List唯一标示
-	 */
-	private int listId;
-	/**
 	 * List名称
 	 */
 	private String listName;
@@ -32,9 +28,7 @@ public class List {
 	 * @param listId
 	 * @param listName
 	 */
-	public List(int listId,String listName){
-		this.listId=listId;
-		this.listName=listName;
+	public List(){
 		this.list = new JSONArray();
 		this.listSize=list.size();
 	}
@@ -50,12 +44,6 @@ public class List {
 		this.list = list;
 	}
 	
-	public int getListId() {
-		return listId;
-	}
-	public void setListId(int listId) {
-		this.listId = listId;
-	}
 	public String getListName() {
 		return listName;
 	}

@@ -76,7 +76,6 @@ public class SearchListTitle extends PaintJPanel{
 		download.setOpaque(false);
 		download.setToolTipText("ÏÂÔØÈ«²¿");
 		download.setBounds(285, 0, 25, 20);
-		
 		download.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
