@@ -47,7 +47,7 @@ public class LocalMusicEntry extends PaintJPanel{
 		this.add(musicName,JLayeredPane.DRAG_LAYER);
 		musicName.setOpaque(false);
 		musicName.setBounds(0,0,45,20);
-		
+		System.out.println("≤‚ ‘3£∫  "+musicJson.toString());
 		String artistTemp = musicJson.getString("artists");
 		this.add(aritst,JLayeredPane.DRAG_LAYER);
 		artistTemp=artistTemp.substring(artistTemp.indexOf("name\":\"")+7, artistTemp.indexOf("\",\"picUr"));

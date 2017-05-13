@@ -21,12 +21,14 @@ public class LocalMusicList extends JList<JPanel>{
 	private JSONArray list;
 	
 	public LocalMusicList(JSONArray list){
+		System.out.println("≤‚ ‘"+list.toString());
 		this.list = list;
 		initSongList();
 	}
 	private void initSongList(){
 		LocalMusicEntry musicEntry=null;
 		for(int i=0;i<list.size();i++){
+			System.out.println(list.toString());
 			musicEntry = new LocalMusicEntry(list.getJSONObject(i));
 			this.add(musicEntry,JLayeredPane.POPUP_LAYER);
 			musicEntry.setOpaque(false);

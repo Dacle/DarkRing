@@ -10,23 +10,32 @@ import net.sf.json.JSONObject;
  *
  */
 public class Lists {
+	
+	ListIO listIO;
+	
+	public Lists(){
+		listIO = new ListIO();
+	}
+	
 	public JSONArray readLists(){
-		ListIO listIO = new ListIO();
 		JSONArray ja = listIO.getLists();
 		return ja;
 	}
 	public JSONArray readMusicList(JSONObject o){
-		ListIO listIO = new ListIO();
 		JSONArray ja = listIO.getMusicList(o);
 		return ja;
 	}
 	
 	public void updateLists(JSONArray ja){
-		ListIO listIO = new ListIO();
 		listIO.updateLists(ja);
 	}
 	public void updateMusicList(JSONArray ja,JSONObject jo){
-		ListIO listIO = new ListIO();
 		listIO.updateMusicList(ja, jo);
+	}
+	public void createMusicList(JSONObject o){
+		listIO.createMusicList(o);
+	}
+	public void renameMusicList(String old,String newName){
+		listIO.renameMusicList(old,newName);
 	}
 }

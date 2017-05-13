@@ -30,21 +30,21 @@ public class ListIO {
 		String temp = null;
 		String jarray = null;
 		if(file.exists()){
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			while((temp = reader.readLine())!=null)
-				jarray = jarray+temp;
-			reader.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				reader = new BufferedReader(new FileReader(file));
+				while((temp = reader.readLine())!=null)
+					jarray = jarray+temp;
+				reader.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		}
-		ja.element(jarray);
-		System.out.println(ja.toString());
+		jarray = jarray.substring(4);
+		ja = JSONArray.fromObject(jarray);
 		return ja;
 	}
 	/**
@@ -68,7 +68,10 @@ public class ListIO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ja.element(jarray);
+		System.out.println(jarray);
+		jarray = jarray.substring(4);
+		System.out.println(jarray);
+		ja= JSONArray.fromObject(jarray);
 		System.out.println(ja.toString());
 		return ja;
 	}
@@ -103,6 +106,49 @@ public class ListIO {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	public void createMusicList(JSONObject object){
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(object.getString("listPath")));
+			writer.write("[]");
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONArray ja = getLists();
+		ja.add(object);
+		updateLists(ja);
+	}
+
+	public void renameMusicList(String oldname,String newname) {
+		// TODO Auto-generated method stub
+		JSONArray ja = getLists();
+		File file = null;   //指定文件名及路径
+		String rootPath = null;
+		String path = null;
+		JSONObject temp = null;
+		for(int i=0;i<ja.size();i++){
+			temp = ja.getJSONObject(i);
+			if(temp.getString("name").equals(oldname)){
+				path = temp.getString("listPath");
+				file=new File(path);
+				rootPath = file.getParent();
+				temp.remove("name");
+				temp.put("name", newname);
+				path = rootPath+File.separator+newname+".jpg";
+				temp.remove("listPath");
+				temp.put("listPath", path);
+				break;
+			}
+		}
+		updateLists(ja);
+		if(file.renameTo(new File(path))){
+			System.out.println("改名成功");    
+		}else{
+			System.out.println("改名失败"); 
 		}
 	}
 }

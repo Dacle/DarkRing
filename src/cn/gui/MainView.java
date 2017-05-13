@@ -10,8 +10,6 @@ import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
 import cn.gui.musicList.LocalListTitle;
 import net.sf.json.JSONArray;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class MainView extends JFrame{
 	/**
@@ -203,10 +201,12 @@ public class MainView extends JFrame{
 		Lists ls = new Lists();
 		JSONArray ja = ls.readLists();
 		for(int i=0;i<ja.size();i++){
+			System.out.println("mainview"+ja.toString());
+			System.out.println("²âÊÔ0£º  "+ja.getJSONObject(i).toString());
 			LocalListTitle defaultList = new LocalListTitle(ja.getJSONObject(i));
+			defaultList.setLayout(new BorderLayout());
 			jTree.add(defaultList,JLayeredPane.MODAL_LAYER);
 			defaultList.setBounds(0, i*20, 140, 20);
-			defaultList.setLayout(new BorderLayout());
 			defaultList.addMouseListener(new LocalListTitleListener());
 		}
 	}
