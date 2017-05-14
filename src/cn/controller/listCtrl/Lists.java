@@ -18,12 +18,10 @@ public class Lists {
 	}
 	
 	public JSONArray readLists(){
-		JSONArray ja = listIO.getLists();
-		return ja;
+		return listIO.getLists();
 	}
 	public JSONArray readMusicList(JSONObject o){
-		JSONArray ja = listIO.getMusicList(o);
-		return ja;
+		return listIO.getMusicList(o);
 	}
 	
 	public void updateLists(JSONArray ja){
@@ -37,5 +35,10 @@ public class Lists {
 	}
 	public void renameMusicList(String old,String newName){
 		listIO.renameMusicList(old,newName);
+	}
+
+	public void deleteMusicList(JSONObject temp) {
+		// TODO Auto-generated method stub
+		listIO.deleteMusicList(temp);
 	}
 }

@@ -13,6 +13,7 @@ import org.kc7bfi.jflac.apps.*;
 public class Player1 implements Runnable{
 	
 	String filepath=null;
+	Player  play;
 	
 	public Player1(String filepath){
 		this.filepath=filepath;
@@ -26,7 +27,7 @@ public class Player1 implements Runnable{
 	
 	public void play(String filePath) {  
 	   
-	    	Player play = new Player();
+	    	play = new Player();
 	    	try {
 				play.decode(filePath);
 			} catch (IOException | LineUnavailableException e) {
@@ -34,5 +35,7 @@ public class Player1 implements Runnable{
 				e.printStackTrace();
 			}
 		  
+	}
+	public void stop(String filePath){
 	}
 }

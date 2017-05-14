@@ -28,7 +28,7 @@ public class ListIO {
 		File file = new File(object.getString("listPath"));
 		BufferedReader reader = null;
 		String temp = null;
-		String jarray = null;
+		String jarray = "";
 		if(file.exists()){
 			try {
 				reader = new BufferedReader(new FileReader(file));
@@ -43,8 +43,10 @@ public class ListIO {
 				e.printStackTrace();
 			}
 		}
-		jarray = jarray.substring(4);
-		ja = JSONArray.fromObject(jarray);
+		System.out.println("lalalal1    "+jarray.toString());
+		if(!jarray.equals(""))
+			ja = JSONArray.fromObject(jarray);		
+		System.out.println("lalalal2    "+ja.toString());
 		return ja;
 	}
 	/**
@@ -75,9 +77,11 @@ public class ListIO {
 		System.out.println(ja.toString());
 		return ja;
 	}
+	
 	/**
 	 * 更新音乐列表
-	 * @param ja 音乐列表信息
+	 * @param ja 音乐列表中音乐信息
+	 * @param jo 音乐列表基本信息
 	 */
 	public void updateMusicList(JSONArray ja,JSONObject jo){
 		BufferedWriter writer = null;
@@ -138,17 +142,33 @@ public class ListIO {
 				rootPath = file.getParent();
 				temp.remove("name");
 				temp.put("name", newname);
-				path = rootPath+File.separator+newname+".jpg";
+				path = rootPath+File.separator+newname+".data";
 				temp.remove("listPath");
 				temp.put("listPath", path);
 				break;
 			}
 		}
 		updateLists(ja);
-		if(file.renameTo(new File(path))){
+		if(!file.exists() || file.renameTo(new File(path))){
 			System.out.println("改名成功");    
 		}else{
 			System.out.println("改名失败"); 
+		}
+	}
+
+	public void deleteMusicList(JSONObject temp) {
+		// TODO Auto-generated method stub
+		JSONArray ja = getLists();
+		ja.remove(temp);
+		updateLists(ja);
+		File file = new File(temp.getString("listPath"));
+		if(file.exists()){
+			file.delete();
+		}
+		if(file.exists()){
+			System.out.println("删除失败");
+		}else{
+			System.out.println("删除成功");
 		}
 	}
 }

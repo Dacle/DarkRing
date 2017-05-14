@@ -4,12 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import cn.controller.listCtrl.Lists;
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
+import cn.driver.play.Player1;
+import cn.gui.musicEntry.LocalMusicEntry;
 import cn.gui.musicList.LocalListTitle;
 import net.sf.json.JSONArray;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class MainView extends JFrame{
 	/**
@@ -198,6 +204,7 @@ public class MainView extends JFrame{
 		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
 		jTree.setBounds(0, 30, 140, 230);
 		jTree.setOpaque(false);
+		 
 		Lists ls = new Lists();
 		JSONArray ja = ls.readLists();
 		for(int i=0;i<ja.size();i++){
@@ -206,8 +213,11 @@ public class MainView extends JFrame{
 			LocalListTitle defaultList = new LocalListTitle(ja.getJSONObject(i));
 			defaultList.setLayout(new BorderLayout());
 			jTree.add(defaultList,JLayeredPane.MODAL_LAYER);
-			defaultList.setBounds(0, i*20, 140, 20);
+			defaultList.setBounds(0, (jTree.getComponentCount()-2)*20, 140, 20);
 			defaultList.addMouseListener(new LocalListTitleListener());
+			if(defaultList.hasFocus()){
+				defaultList.setOpaque(true);
+			}
 		}
 	}
 	
@@ -225,14 +235,28 @@ public class MainView extends JFrame{
 	 * 初始化播放菜单栏
 	 */
 	private void initPlayMenu(){
+		
 		playButton.setIcon(new ImageIcon("image/play.png"));
 		playButton.setBounds(50, 263, 32, 32);
 		playButton.setOpaque(false);
 		layeredPane.add(playButton,JLayeredPane.PALETTE_LAYER);
 		playButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent e) {
+				boolean isPlaying = false;
 				playButton.setIcon(new ImageIcon("image/play_click.png"));
+				LocalMusicEntry temp = (LocalMusicEntry) getFocusOwner();
+				ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
+				System.out.println(temp.getMusicJson().toString());
+				Player1 play=new Player1(temp.getMusicJson().getString("path"));
+				if(e.getClickCount()==1 && !isPlaying){
+					fixedThreadPool.execute(play);
+					isPlaying = true;
+				}else if(e.getClickCount()==1 && isPlaying){
+					playButton.setIcon(new ImageIcon("image/play.png"));
+					play.stop("本函数待完成");
+					isPlaying = false;
+				}
 			}
 		});
 		
