@@ -4,18 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cn.controller.listCtrl.Lists;
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
-import cn.driver.play.Player1;
+import cn.driver.play.FlacSupport;
+import cn.driver.play.Mp3Support;
+import cn.driver.play.Play;
 import cn.gui.musicEntry.LocalMusicEntry;
 import cn.gui.musicList.LocalListTitle;
 import net.sf.json.JSONArray;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class MainView extends JFrame{
 	/**
@@ -98,6 +96,8 @@ public class MainView extends JFrame{
 	public static JList<JPanel> jTree = new JList<JPanel>();
 	
 	private static MainView window;
+
+	boolean isPlaying=false;
 	
 	public static void main(String[] args) {
 		window = new MainView();
@@ -118,16 +118,11 @@ public class MainView extends JFrame{
 	private void initialize() {
 		
 		//窗口
-		this.setUndecorated(true);
-		this.setBounds(100, 100, 450, 300);
-		this.getContentPane().setLayout(null);
-		this.setLayeredPane(layeredPane);
+		initWindow();
 		
 		//背景
-		PaintJPanel BGP = new PaintJPanel(new ImageIcon("image/background.png").getImage());
-		BGP.setBounds(0, 0, this.getWidth(), this.getHeight());
-		layeredPane.add(BGP,JLayeredPane.DEFAULT_LAYER);
-		
+		initWindowBackground();
+
 		//菜单栏
 		initMenu();
 		
@@ -139,6 +134,19 @@ public class MainView extends JFrame{
 		
 		//初始化播放菜单：播放、暂停、继续、音量
 		initPlayMenu();
+	}
+	
+	private void initWindow(){
+		this.setUndecorated(true);
+		this.setBounds(100, 100, 450, 300);
+		this.getContentPane().setLayout(null);
+		this.setLayeredPane(layeredPane);
+	}
+	
+	private void initWindowBackground(){
+		PaintJPanel BGP = new PaintJPanel(new ImageIcon("image/background.png").getImage());
+		BGP.setBounds(0, 0, this.getWidth(), this.getHeight());
+		layeredPane.add(BGP,JLayeredPane.DEFAULT_LAYER);
 	}
 	
 	/**
@@ -243,22 +251,34 @@ public class MainView extends JFrame{
 		playButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				boolean isPlaying = false;
-				playButton.setIcon(new ImageIcon("image/play_click.png"));
-				LocalMusicEntry temp = (LocalMusicEntry) getFocusOwner();
-				ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
+				LocalMusicEntry  temp = (LocalMusicEntry) getFocusOwner();
 				System.out.println(temp.getMusicJson().toString());
-				Player1 play=new Player1(temp.getMusicJson().getString("path"));
+				String path = temp.getMusicJson().getString("path");
+				Play play;
+				if(path.endsWith(".mp3")){
+					play=new Mp3Support(path);
+				}else if(path.endsWith(".flac")){
+					play=new FlacSupport(path);
+				}else{
+					play = new Mp3Support(path);
+				}
 				if(e.getClickCount()==1 && !isPlaying){
-					fixedThreadPool.execute(play);
+					temp.requestFocus();
+					Thread playThread = new Thread(play);
+					playThread.start();
+					MainView.playButton.setIcon(new ImageIcon("image/play_click.png"));
 					isPlaying = true;
-				}else if(e.getClickCount()==1 && isPlaying){
-					playButton.setIcon(new ImageIcon("image/play.png"));
-					play.stop("本函数待完成");
+				}else if(e.getClickCount()==1 && !temp.hasFocus() && !isPlaying){
+					temp.requestFocus();
+				}else if(e.getClickCount()==1 && temp.hasFocus() && isPlaying){
+					play.stop();
+					MainView.playButton.setIcon(new ImageIcon("image/play.png"));
 					isPlaying = false;
 				}
+			
 			}
 		});
+			
 		
 		ImageIcon lastIcon = new ImageIcon("image/lastMusic.png");
 		lastMusicButton.setIcon(lastIcon);
