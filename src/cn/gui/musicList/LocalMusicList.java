@@ -5,17 +5,14 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLayeredPane;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
-import cn.driver.play.FlacSupport;
-import cn.driver.play.Mp3Support;
-import cn.driver.play.Play;
+import cn.driver.play.FlacPlayTest;
+import cn.driver.play.PlayTest;
 import cn.gui.MainView;
 import cn.gui.musicEntry.LocalMusicEntry;
 import net.sf.json.JSONArray;
@@ -49,20 +46,18 @@ public class LocalMusicList extends JList<JPanel>{
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					boolean isPlaying=false;
-					ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
 					LocalMusicEntry  temp = (LocalMusicEntry) e.getComponent();
 					System.out.println(temp.getMusicJson().toString());
 					String path = temp.getMusicJson().getString("path");
-					Play play;
-					if(path.endsWith(".mp3")){
-						play=new Mp3Support(path);
-					}else if(path.endsWith(".flac")){
-						play=new FlacSupport(path);
+					PlayTest play;
+					if(path.endsWith(".flac")){
+						play=new FlacPlayTest(path);
 					}else{
-						play = new Mp3Support(path);
+						play = new FlacPlayTest(path);
 					}
+					Thread p = new Thread(play);
 					if(e.getClickCount()==2 && !isPlaying){
-						fixedThreadPool.execute(play);
+						p.start();
 						MainView.playButton.setIcon(new ImageIcon("image/play_click.png"));
 						isPlaying = true;
 					}else if(e.getClickCount()==1 && !temp.hasFocus() && !isPlaying){

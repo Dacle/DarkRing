@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
 import cn.driver.resources.internet.Down;
-import cn.gui.PaintJPanel;
 import net.sf.json.JSONObject;
 /**
  * 继承PaintJpanel类，作为搜索结果单条目对象，层数高于SearchList,为POPUP_LAYER
@@ -19,48 +18,31 @@ import net.sf.json.JSONObject;
  * @modify by Dacle
  *
  */
-public class SearchMusicEntry extends PaintJPanel{
+public class SearchMusicEntry extends MusicEntry{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JLabel musicName = new JLabel();
-	private JLabel aritst = new JLabel();
-	private JLabel album = new JLabel();
-	private JLabel play = new JLabel();
-	private JLabel addToList = new JLabel();
-	private JLabel download = new JLabel();
-	
-	private JSONObject musicJson;
+	private JLabel album;
+	private JLabel play;
+	private JLabel addToList;
+	private JLabel download;
 	
 	public SearchMusicEntry(JSONObject musicJson){
-		super(new ImageIcon("image/musicEntry.png").getImage());
-		
-		this.musicName = new JLabel();
-		this.aritst = new JLabel();
+		super(musicJson);
 		this.album = new JLabel();
 		this.play = new JLabel();
 		this.addToList = new JLabel();
 		this.download = new JLabel();
-		
-		this.musicJson = musicJson;
 		initMusicEntry();
 	}
 	
-	public void initMusicEntry(){
+	private void initMusicEntry(){
 		
-		musicName.setText(musicJson.getString("name"));
-		this.add(musicName,JLayeredPane.DRAG_LAYER);
-		musicName.setOpaque(false);
 		musicName.setBounds(0,0,60,20);
 		
-		String artistTemp = musicJson.getString("artists");
-		this.add(aritst,JLayeredPane.DRAG_LAYER);
-		artistTemp=artistTemp.substring(artistTemp.indexOf("name\":\"")+7, artistTemp.indexOf("\",\"picUr"));
-		aritst.setText(artistTemp);
 		aritst.setBounds(60, 0, 60, 20);
-		aritst.setOpaque(false);
 		
 		
 		String albumTemp = musicJson.getString("album");
@@ -92,9 +74,9 @@ public class SearchMusicEntry extends PaintJPanel{
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				String url = musicJson.getString("audio");
-				String name = musicJson.getString("artists").substring(musicJson.getString("artists").indexOf("name\":\"")+7, musicJson.getString("artists").indexOf("\",\"picUr"))+" - "+musicJson.getString("name");
 				ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
-				Down down=new Down(url, name,"E:\\Music\\","mp3");
+				System.out.println("name   "+musicJson.toString());
+				Down down=new Down(url, musicJson.getString("name"),"E:\\Music\\","mp3");
 				fixedThreadPool.execute(down);
 			}
 		});

@@ -71,7 +71,11 @@ public class HttpUtil {
 		
 		}
 		//对字符串进行截取，以适应JSON.parseArray的格式
-		body=body.substring(body.indexOf("ongs\":")+6, body.lastIndexOf("},\"co"));
+		try{
+			body=body.substring(body.indexOf("ongs\":")+6, body.lastIndexOf("},\"co"));
+		}catch(StringIndexOutOfBoundsException e){
+			return null;
+		}
 		JSONArray musicInfoList = JSONArray.fromObject(body);
 		System.out.println(musicInfoList.toString());
 		return musicInfoList;

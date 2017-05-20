@@ -8,7 +8,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import cn.controller.listCtrl.Lists;
@@ -22,7 +21,7 @@ import net.sf.json.JSONObject;
  * @modify by Dacle
  *
  */
-public class LocalMusicEntry extends JMenuBar{
+public class LocalMusicEntry extends MusicEntry{
 
 	public JSONObject getMusicJson() {
 		return musicJson;
@@ -34,8 +33,6 @@ public class LocalMusicEntry extends JMenuBar{
 
 	private static final long serialVersionUID = 1L;
 	
-	private JLabel musicName;
-	private JLabel aritst;
 	private JLabel addToILove;
 	private JLabel delete;
 	private JMenu addToMusicList;
@@ -43,32 +40,20 @@ public class LocalMusicEntry extends JMenuBar{
 	private JSONObject jtemp;
 
 	Lists ls;
-	private JSONObject musicJson;
 	
 	public LocalMusicEntry(JSONObject musicJson){
-		this.musicName = new JLabel();
-		this.aritst = new JLabel();
+		super(musicJson);
 		this.addToILove = new JLabel();
 		this.delete = new JLabel();
 		this.addToMusicList = new JMenu();
-		this.musicJson = musicJson;
-		initMusicEntry();
+		initLocalMusicEntry();
 	}
 	
-	public void initMusicEntry(){
+	private void initLocalMusicEntry(){
 		
-		musicName.setText(musicJson.getString("name"));
-		this.add(musicName,JLayeredPane.DRAG_LAYER);
-		musicName.setOpaque(false);
 		musicName.setBounds(0,0,45,20);
-		System.out.println("≤‚ ‘3£∫  "+musicJson.toString());
-		String artistTemp = musicJson.getString("artists");
-		this.add(aritst,JLayeredPane.DRAG_LAYER);
-		//artistTemp=artistTemp.substring(artistTemp.indexOf("name\":\"")+7, artistTemp.indexOf("\",\"picUr"));
-		aritst.setText(artistTemp);
-		aritst.setBounds(45, 0, 45, 20);
-		aritst.setOpaque(false);
 		
+		aritst.setBounds(45, 0, 45, 20);
 		
 		this.add(addToILove,JLayeredPane.DRAG_LAYER);
 		addToILove.setIcon(new ImageIcon("image/love_static.png"));

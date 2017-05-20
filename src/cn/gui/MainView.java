@@ -8,9 +8,8 @@ import java.awt.event.MouseEvent;
 import cn.controller.listCtrl.Lists;
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
-import cn.driver.play.FlacSupport;
-import cn.driver.play.Mp3Support;
-import cn.driver.play.Play;
+import cn.driver.play.FlacDecode;
+import cn.driver.showWave.Spectrum;
 import cn.gui.musicEntry.LocalMusicEntry;
 import cn.gui.musicList.LocalListTitle;
 import net.sf.json.JSONArray;
@@ -94,24 +93,23 @@ public class MainView extends JFrame{
 	 * 列表框,一个JPanel对象是一个歌单
 	 */
 	public static JList<JPanel> jTree = new JList<JPanel>();
-	
-	private static MainView window;
-
-	boolean isPlaying=false;
-	
-	public static void main(String[] args) {
-		window = new MainView();
-		window.setVisible(true);
-		
-	}
-
 	/**
-	 * Create the application.
+	 * 饿汉式单例模式，在类加载之间就已经实例化，保证了线程安全
 	 */
-	public MainView() {
+	private static final MainView window = new MainView();
+
+	boolean isPlaying = false;
+	/**
+	 * 主窗口的构造函数私有化，为单例模式
+	 */
+	private MainView(){
 		initialize();
 	}
-
+	
+	public static MainView getInstance() {
+		return window;
+	}
+	
 	/**
 	 * 对窗口进行初始化
 	 */
@@ -237,6 +235,10 @@ public class MainView extends JFrame{
 		mainResult.setBGP(image);
 		mainResult.setBounds(140, 30, this.getWidth()-140, this.getHeight()-70);
 		layeredPane.add(mainResult,JLayeredPane.PALETTE_LAYER);
+		
+		final Spectrum spec = new Spectrum();
+		mainResult.add(spec);
+		new Thread(spec).start();  
 	}
 	
 	/**
@@ -249,31 +251,29 @@ public class MainView extends JFrame{
 		playButton.setOpaque(false);
 		layeredPane.add(playButton,JLayeredPane.PALETTE_LAYER);
 		playButton.addMouseListener(new MouseAdapter() {
+
+			FlacDecode play;
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				LocalMusicEntry  temp = (LocalMusicEntry) getFocusOwner();
 				System.out.println(temp.getMusicJson().toString());
 				String path = temp.getMusicJson().getString("path");
-				Play play;
-				if(path.endsWith(".mp3")){
-					play=new Mp3Support(path);
-				}else if(path.endsWith(".flac")){
-					play=new FlacSupport(path);
-				}else{
-					play = new Mp3Support(path);
-				}
 				if(e.getClickCount()==1 && !isPlaying){
-					temp.requestFocus();
-					Thread playThread = new Thread(play);
-					playThread.start();
+					if(path.endsWith(".mp3")){
+						play=new FlacDecode(path);
+					}else if(path.endsWith(".flac")){
+						play=new FlacDecode(path);
+					}else{
+						play = new FlacDecode(path);
+					}
+					Thread p = new Thread(play);
+					p.start();
 					MainView.playButton.setIcon(new ImageIcon("image/play_click.png"));
 					isPlaying = true;
-				}else if(e.getClickCount()==1 && !temp.hasFocus() && !isPlaying){
-					temp.requestFocus();
-				}else if(e.getClickCount()==1 && temp.hasFocus() && isPlaying){
-					play.stop();
+				}else if(e.getClickCount()==1 && isPlaying){
 					MainView.playButton.setIcon(new ImageIcon("image/play.png"));
 					isPlaying = false;
+					play.stop();
 				}
 			
 			}

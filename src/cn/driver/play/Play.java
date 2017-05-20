@@ -10,7 +10,7 @@ public interface Play extends Runnable{
 	@Override
 	public void run();
 	
-	public void play(String filePath);
+	public boolean play(String filePath);
 	public void stop();
 	public void carryOn();
 	public void paused();
