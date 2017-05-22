@@ -43,10 +43,8 @@ public class ListIO {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("lalalal1    "+jarray.toString());
 		if(!jarray.equals(""))
 			ja = JSONArray.fromObject(jarray);		
-		System.out.println("lalalal2    "+ja.toString());
 		return ja;
 	}
 	/**
@@ -70,11 +68,8 @@ public class ListIO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(jarray);
 		jarray = jarray.substring(4);
-		System.out.println(jarray);
 		ja= JSONArray.fromObject(jarray);
-		System.out.println(ja.toString());
 		return ja;
 	}
 	

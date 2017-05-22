@@ -75,7 +75,6 @@ public class SearchMusicEntry extends MusicEntry{
 			public void mouseClicked(MouseEvent arg0) {
 				String url = musicJson.getString("audio");
 				ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
-				System.out.println("name   "+musicJson.toString());
 				Down down=new Down(url, musicJson.getString("name"),"E:\\Music\\","mp3");
 				fixedThreadPool.execute(down);
 			}

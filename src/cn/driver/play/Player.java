@@ -9,9 +9,6 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import org.kc7bfi.jflac.apps.SeekTablePlayer;
-import org.kc7bfi.jflac.util.ByteData;
-
 import cn.gui.MainView;
 /**
  * Mp3格式支持
@@ -19,7 +16,7 @@ import cn.gui.MainView;
  * @since 2017-5-14
  * @modify by Dacle
  */
-public abstract class PlayTest implements Runnable{
+public abstract class Player implements Play{
 	/**
 	 * 暂停标记，用于进程通信控制
 	 */
@@ -31,7 +28,7 @@ public abstract class PlayTest implements Runnable{
 	/**
 	 * 线性数据控制
 	 */
-	SourceDataLine dataline = null;
+	SourceDataLine sourceDataline = null;
 	
 	FloatControl volume = null;
 	Object lock = new Object();
@@ -44,56 +41,67 @@ public abstract class PlayTest implements Runnable{
 	
 	private void play() {
 		AudioInputStream input = getAudioInputStream();
-		System.out.println(input.getFormat().toString());
+		System.out.println("run play()  ");
 		
     	AudioFormat format = input.getFormat();
     	DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		try {
-			dataline =  (SourceDataLine) AudioSystem.getLine(info);
-		
-		dataline.open();
-    	
+			sourceDataline =  (SourceDataLine) AudioSystem.getLine(info);
+			sourceDataline.open();
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	setVolume();
     	
     	MainView.musicSlider.setMaximum((int)getTimeLength());
     	MainView.musicSlider.setValue(0);
-    	SeekTablePlayer stp = new SeekTablePlayer();
-    	if(dataline!=null){
-			dataline.open(format);
+    	if(sourceDataline!=null){
+    		try {
+    			System.out.println("当前音频流格式:   "+format.toString());  
+				sourceDataline.open(format);
+    		} catch (LineUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			byte[] abData = new byte[4096];
-			ByteData bd = new ByteData(4);
-	    	int nBytesRead = 0;
+	    	int nBytesRead;
 	    	System.out.println("播放开始");
     		synchronized (lock){
-    			while((nBytesRead = input.read(abData, 0, abData.length)) != -1){
-    				while (paused) {
-						if(dataline.isRunning()){
-							dataline.stop();
-							System.out.println("暂停");
+					try {
+						while((nBytesRead = input.read(abData, 0, abData.length)) != -1){
+							while (paused) {
+								if(sourceDataline.isRunning()){
+									sourceDataline.stop();
+									System.out.println("暂停");
+								}
+								lock.wait();//在其他线程调用此对象的notify()方法之前，使当前线程等待
+								System.out.println("等待");
+							}
+							if(!sourceDataline.isRunning() && !over) {
+								System.out.println("开始播放");
+								sourceDataline.start();
+							}
+							if (over && sourceDataline.isRunning()) {
+								System.out.println("停止播放");
+								MainView.musicSlider.setValue(0);
+								sourceDataline.drain();
+								sourceDataline.stop();
+								sourceDataline.close();
+							}
+							MainView.musicSlider.setValue((int)sourceDataline.getMicrosecondPosition());
+							sourceDataline.write(abData, 0, nBytesRead);
 						}
-						lock.wait();//在其他线程调用此对象的notify()方法之前，使当前线程等待
-						System.out.println("等待");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-    				if(!dataline.isRunning() && !over) {
-						System.out.println("开始播放");
-						dataline.start();
-					}
-					if (over && dataline.isRunning()) {
-						System.out.println("停止播放");
-						MainView.musicSlider.setValue(0);
-						dataline.drain();
-						dataline.stop();
-						dataline.close();
-					}
-					MainView.musicSlider.setValue((int)dataline.getMicrosecondPosition());
-    				if (nBytesRead >= 0)
-    					stp.processPCM(bd);;
-    			}
     		}
-    	}} catch (LineUnavailableException | IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    		
+    	}
 
 	}
 
@@ -104,10 +112,10 @@ public abstract class PlayTest implements Runnable{
 	private void setVolume(){
 
     	//关联音量调节
-    	if(dataline!=null){
-    		if(dataline.isControlSupported(FloatControl.Type.MASTER_GAIN)){
+    	if(sourceDataline!=null){
+    		if(sourceDataline.isControlSupported(FloatControl.Type.MASTER_GAIN)){
         		MainView.volumeSlider.setEnabled(true);
-        		volume= (FloatControl)dataline.getControl( FloatControl.Type.MASTER_GAIN );
+        		volume= (FloatControl)sourceDataline.getControl( FloatControl.Type.MASTER_GAIN );
         		MainView.volumeSlider.setMinimum((int)volume.getMinimum());
         		MainView.volumeSlider.setMaximum((int)volume.getMaximum());
             	volume.setValue((float)(volume.getMinimum()+(4*(volume.getMaximum()-volume.getMinimum()))/5));

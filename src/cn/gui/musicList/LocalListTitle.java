@@ -31,7 +31,6 @@ public class LocalListTitle extends JMenuBar{
 		this.object = object;
 		this.ls = new Lists();
 		this.array = ls.readMusicList(object);
-		System.out.println("测试1：  "+object.toString());
 		this.setOpaque(false);
 		this.addList = new JMenuItem("新建歌单");
 		this.addMusic = new JMenuItem("添加歌曲");
@@ -62,9 +61,11 @@ public class LocalListTitle extends JMenuBar{
 	public JSONObject getObject() {
 		return object;
 	}
+	
 	public void setObject(JSONObject object) {
 		this.object = object;
 	}
+	
 	public void initMusicEntry(){
 		
 		listName.setText(object.getString("name"));
@@ -86,7 +87,6 @@ public class LocalListTitle extends JMenuBar{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println("启动新建");
 				JSONObject temp = new JSONObject();
 				temp.put("name", "新建歌单");
 				temp.put("listPath", "E:\\Music\\"+temp.getString("name")+".data");

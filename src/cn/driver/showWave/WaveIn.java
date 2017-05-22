@@ -3,6 +3,7 @@ package cn.driver.showWave;
 import javax.sound.sampled.AudioFormat;  
 import javax.sound.sampled.AudioSystem;  
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;  
 /* 
  * WaveIn.java 
@@ -19,7 +20,7 @@ public class WaveIn {
      */  
     public boolean open() {  
         af = new AudioFormat(32000, 16, 1, true, false);  
-        dli = new DataLine.Info(TargetDataLine.class, af);  
+        dli = new DataLine.Info(SourceDataLine.class, af);  
         try {  
             tdl = (TargetDataLine) AudioSystem.getLine(dli);  
             tdl.open(af, FFT.FFT_N << 1);  

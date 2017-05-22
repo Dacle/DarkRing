@@ -5,12 +5,13 @@ import java.io.IOException;
  
 import javax.sound.sampled.*;
 
-public class FlacPlayTest extends PlayTest{
+public class MP3PlayTest extends Player{
 	String path;
 	AudioFormat decodeFormat;
 	
-	public FlacPlayTest(String filepath) {
+	public MP3PlayTest(String filepath) {
 		// TODO Auto-generated constructor stub
+		System.out.println("初始化MP3PlayTest类");
 		this.path = filepath;
 	}
 
@@ -19,14 +20,24 @@ public class FlacPlayTest extends PlayTest{
 		// TODO Auto-generated method stub
 
 		File file = new File(path);
+		if(file.exists()&&file.canRead()){
+			System.out.println("音乐路径：   "+path);
+		}else{
+			System.out.println("文件有问题");
+		}
+		AudioInputStream is=null;
 		AudioInputStream rs=null;
 		try {
-			rs = AudioSystem.getAudioInputStream(file);
-		} catch (UnsupportedAudioFileException | IOException e) {
+			is = AudioSystem.getAudioInputStream(file);
+		} catch (UnsupportedAudioFileException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		decodeFormat = rs.getFormat();
+	
+		decodeFormat = is.getFormat();
 		
 		System.out.println("format:   "+decodeFormat.toString());
 		if(decodeFormat.getEncoding()!=AudioFormat.Encoding.PCM_SIGNED){
@@ -35,8 +46,16 @@ public class FlacPlayTest extends PlayTest{
 					decodeFormat.getChannels(), decodeFormat.getChannels() * 2,
 					decodeFormat.getSampleRate(), false);
 		}
-		rs = AudioSystem.getAudioInputStream(decodeFormat, rs);
-		System.out.println("format:   "+rs.getFormat().toString());
+		rs = AudioSystem.getAudioInputStream(decodeFormat, is);
+		try {
+			System.out.println("new format:   "+AudioSystem.getAudioFileFormat(file).hashCode());
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return rs;
 	}
 
@@ -47,5 +66,6 @@ public class FlacPlayTest extends PlayTest{
 		System.out.println("时长：   "+time);
 		return time;
 	}
+
 
 }

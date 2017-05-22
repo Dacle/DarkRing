@@ -24,7 +24,7 @@ public class MinimizeButtonListener implements MouseListener{
 		/**
 		 * 系统托盘实例
 		 */
-		SystemTray systemTray = SystemTray.getSystemTray();
+		final SystemTray systemTray = SystemTray.getSystemTray();
 		
 		try {
 			//获取托盘图标文件

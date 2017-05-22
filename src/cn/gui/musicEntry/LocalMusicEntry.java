@@ -72,14 +72,13 @@ public class LocalMusicEntry extends MusicEntry{
 		delete.setToolTipText("从列表中删除");
 		delete.setBounds(96,0, 16, 20);
 		
-		addToMusicList.setIcon(new ImageIcon("image/addto.png"));
+		addToMusicList.setIcon(new ImageIcon("image/addto1.png"));
 		this.add(addToMusicList,JLayeredPane.DRAG_LAYER);
 		addToMusicList.setOpaque(false);
 		addToMusicList.setToolTipText("添加到");
 		addToMusicList.setBounds(112, 0, 26, 20);
 		ls = new Lists();
 		ja = ls.readLists();
-		System.out.println("ja   "+ja.toString());
 		for(int i=0;i<ja.size();i++){
 			jtemp = ja.getJSONObject(i);
 			JMenuItem jmi = new JMenuItem(jtemp.getString("name"));
@@ -89,8 +88,6 @@ public class LocalMusicEntry extends MusicEntry{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					JSONObject jo = jtemp;
-					System.out.println("jo   "+jo.toString());
-					System.out.println("musicJson   "+musicJson.toString());
 					JSONArray musiclist = ls.readMusicList(jo);
 					musiclist.add(musicJson);
 					ls.updateMusicList(musiclist, jo);

@@ -33,7 +33,6 @@ public class FileIO extends Frame{
 	    object.put("name", filename.substring(filename.indexOf(" - ")+3,filename.indexOf(".")));
 	    object.put("artists", filename.substring(0, filename.indexOf(" - ")));
 	    object.put("path", path);
-	    System.out.println("获取音乐信息    "+object.toString());
    }
 	public JSONObject getFileInfo(){
 		return object;

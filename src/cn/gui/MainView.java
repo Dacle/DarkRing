@@ -9,9 +9,12 @@ import cn.controller.listCtrl.Lists;
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
 import cn.driver.play.FlacDecode;
+import cn.driver.play.MP3PlayTest;
+import cn.driver.play.Play;
 import cn.driver.showWave.Spectrum;
 import cn.gui.musicEntry.LocalMusicEntry;
 import cn.gui.musicList.LocalListTitle;
+import cn.gui.musicList.LocalMusicList;
 import net.sf.json.JSONArray;
 
 public class MainView extends JFrame{
@@ -23,7 +26,7 @@ public class MainView extends JFrame{
 	 * JLayeredPane对象,用于控件分层
 	 * @layer 从底层到上层Default、Palette、Modal、PopUp、Drag
 	 */
-    public JLayeredPane layeredPane = new JLayeredPane();  
+    public static JLayeredPane layeredPane = new JLayeredPane();  
 	/**
 	 * exit() 窗口关闭按钮
 	 */
@@ -93,6 +96,14 @@ public class MainView extends JFrame{
 	 * 列表框,一个JPanel对象是一个歌单
 	 */
 	public static JList<JPanel> jTree = new JList<JPanel>();
+	/**
+	 * 本地音乐列表
+	 */
+	public static LocalMusicList lms;
+	/**
+	 * 判断列表是否打开
+	 */
+	public static boolean isOpen=false;
 	/**
 	 * 饿汉式单例模式，在类加载之间就已经实例化，保证了线程安全
 	 */
@@ -206,7 +217,7 @@ public class MainView extends JFrame{
 	/**
 	 * 初始化歌曲列表
 	 */
-	private void initList(){
+	public static void initList(){
 		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
 		jTree.setBounds(0, 30, 140, 230);
 		jTree.setOpaque(false);
@@ -214,8 +225,6 @@ public class MainView extends JFrame{
 		Lists ls = new Lists();
 		JSONArray ja = ls.readLists();
 		for(int i=0;i<ja.size();i++){
-			System.out.println("mainview"+ja.toString());
-			System.out.println("测试0：  "+ja.getJSONObject(i).toString());
 			LocalListTitle defaultList = new LocalListTitle(ja.getJSONObject(i));
 			defaultList.setLayout(new BorderLayout());
 			jTree.add(defaultList,JLayeredPane.MODAL_LAYER);
@@ -225,6 +234,7 @@ public class MainView extends JFrame{
 				defaultList.setOpaque(true);
 			}
 		}
+		
 	}
 	
 	/**
@@ -252,19 +262,19 @@ public class MainView extends JFrame{
 		layeredPane.add(playButton,JLayeredPane.PALETTE_LAYER);
 		playButton.addMouseListener(new MouseAdapter() {
 
-			FlacDecode play;
+			Play play;
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				LocalMusicEntry  temp = (LocalMusicEntry) getFocusOwner();
-				System.out.println(temp.getMusicJson().toString());
+				System.out.println("将要播放的音乐信息：    "+temp.getMusicJson().toString());
 				String path = temp.getMusicJson().getString("path");
 				if(e.getClickCount()==1 && !isPlaying){
 					if(path.endsWith(".mp3")){
-						play=new FlacDecode(path);
+						play=new MP3PlayTest(path);
 					}else if(path.endsWith(".flac")){
 						play=new FlacDecode(path);
 					}else{
-						play = new FlacDecode(path);
+						play = new MP3PlayTest(path);
 					}
 					Thread p = new Thread(play);
 					p.start();

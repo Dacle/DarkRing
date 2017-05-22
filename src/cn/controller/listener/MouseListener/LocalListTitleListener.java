@@ -14,27 +14,24 @@ import net.sf.json.JSONArray;
 public class LocalListTitleListener implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		boolean isOpen=false;
+
 		JSONArray ja = null;
-		LocalMusicList lms = null;
+		// TODO Auto-generated method stub
+		
 		LocalListTitle temp = (LocalListTitle) e.getComponent();
-		if((e.getClickCount()==2 || (temp.hasFocus() && e.getClickCount()==1)) && !isOpen){
+		if(!MainView.isOpen){
 			Lists ls = new Lists();
-			System.out.println("lalala   "+temp.getObject().toString());
 			ja = ls.readMusicList(temp.getObject());
-			System.out.println("lalala1   "+ja.toString());
-			lms = new LocalMusicList(ja);
-			MainView.jTree.add(lms,JLayeredPane.MODAL_LAYER);
-			lms.setBounds(0, (MainView.jTree.getComponentCount()-2)*20, 140, ja.size()*20);
-			lms.setOpaque(false);
-			isOpen = true;
-		}else if(e.getClickCount()==1 && !temp.hasFocus() && !isOpen){
-			temp.requestFocus();
-		}else if(e.getClickCount()==1 && temp.hasFocus() && isOpen){
-			MainView.jTree.remove(lms);
+			MainView.lms = new LocalMusicList(ja);
+			MainView.jTree.add(MainView.lms,JLayeredPane.MODAL_LAYER);
+			MainView.lms.setBounds(0, (MainView.jTree.getComponentCount()-2)*20, 140, ja.size()*20);
+			MainView.lms.setOpaque(false);
+			MainView.isOpen = true;
+		}else{
+			System.out.println("¹Ø±Õlist");
+			MainView.jTree.remove(MainView.lms);
 			MainView.jTree.updateUI();
-			isOpen = false;
+			MainView.isOpen = false;
 		}
 		
 	}

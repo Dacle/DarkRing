@@ -3,6 +3,7 @@ import java.io.IOException;
 
 import javax.sound.sampled.*;
 
+import org.kc7bfi.jflac.apps.Decoder;
 import org.kc7bfi.jflac.apps.Player;
 
 /**
@@ -11,7 +12,7 @@ import org.kc7bfi.jflac.apps.Player;
  * @since 2017-5-14
  * @modify by Dacle
  */
-public class FlacDecode extends Player implements Runnable{
+public class FlacDecode extends Player implements Runnable,Play{
 	String filepath;
 	public FlacDecode(String filepath){
 		this.filepath = filepath;
@@ -32,12 +33,42 @@ public class FlacDecode extends Player implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		play();
+			
+	}
+
+	public void play() {
+		// TODO Auto-generated method stub
 		try {
 			this.decode(filepath);
-		} catch (IOException | LineUnavailableException e) {
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+		
+	}
+
+	@Override
+	public void carryOn() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void paused() {
+		// TODO Auto-generated method stub
+		
 	}  
+	public void ss(){
+		Decoder de = new Decoder();
+		try {
+			de.decode(filepath, filepath.replaceFirst(".flac", ".wav"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
