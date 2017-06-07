@@ -14,17 +14,77 @@ import net.sf.json.JSONObject;
 public class ListIO {
 	
 	String listPath;
+	JSONArray ja = new JSONArray();
 	
 	public ListIO(JSONObject object){
+		initListIO();
 		listPath = object.getString("listPath");
 	}
 	
 	public ListIO(){
+		initListIO();
+	}
+	
+	public void initListIO(){
+		FileReader fr = null;
+		FileWriter fw = null;
+		BufferedReader reader = null;
+		String temp = null;
+		String jarray = null;
+		System.out.println("asdasdads");
+		File f = new File("file/lists.data");
+		if(!f.exists()){						//如果文件不存在，就创建一个新的
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		try {
+			fr = new FileReader("file/lists.data");
+			fw = new FileWriter("file/lists.data");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
+		try {									//读取文件内容
+			reader = new BufferedReader(fr);
+			while((temp = reader.readLine())!=null)
+				jarray = jarray+temp;
+			reader.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(jarray==null){						//如果文件内容为空,则添加默认内容
+			JSONObject objectTemp = new JSONObject();
+			JSONArray jaa = null;
+			objectTemp.put("name","默认列表");
+			objectTemp.put("listPath", "file/默认列表.data");
+			jarray = objectTemp .toString();
+			createMusicList(objectTemp);			//并且创建默认歌曲列表
+			jaa= JSONArray.fromObject("["+jarray+"]");
+			BufferedWriter writer = new BufferedWriter(fw);
+			try {									//将默认内容添加到列表的列表
+				writer.write(jaa.toString());
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ja = jaa;
+		}else
+			ja= JSONArray.fromObject(jarray);
 	}
 	
 	public JSONArray getMusicList(JSONObject object){
-		JSONArray ja = new JSONArray();
+		System.out.println("object "+object.toString());
 		File file = new File(object.getString("listPath"));
 		BufferedReader reader = null;
 		String temp = null;
@@ -35,6 +95,7 @@ public class ListIO {
 				while((temp = reader.readLine())!=null)
 					jarray = jarray+temp;
 				reader.close();
+				System.out.println("jarray   "+jarray);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -47,29 +108,13 @@ public class ListIO {
 			ja = JSONArray.fromObject(jarray);		
 		return ja;
 	}
+	
 	/**
 	 * 从本地获取歌曲列表的列表
 	 * @return
 	 */
 	public JSONArray getLists(){
-		JSONArray ja = new JSONArray();
-		BufferedReader reader = null;
-		String temp = null;
-		String jarray = null;
-		try {
-			reader = new BufferedReader(new FileReader("E:\\Music\\lists.data"));
-			while((temp = reader.readLine())!=null)
-				jarray = jarray+temp;
-			reader.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		jarray = jarray.substring(4);
-		ja= JSONArray.fromObject(jarray);
+		System.out.println("list内容：  "+ja.toString());
 		return ja;
 	}
 	
@@ -84,6 +129,7 @@ public class ListIO {
 		try {
 			writer = new BufferedWriter(new FileWriter(jo.getString("listPath")));
 			writer.write(str);
+			System.out.println("add   "+str);
 			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -95,11 +141,12 @@ public class ListIO {
 	 * 更新音乐列表的列表
 	 * @param ja 音乐列表信息
 	 */
-	public void updateLists(JSONArray ja){
+	public void updateLists(JSONArray jaa){
+		ja = jaa;
 		BufferedWriter writer = null;
 		String str = ja.toString();
 		try {
-			writer = new BufferedWriter(new FileWriter("E:\\Music\\lists.data"));
+			writer = new BufferedWriter(new FileWriter("file/lists.data"));
 			writer.write(str);
 			writer.close();
 		} catch (IOException e) {
@@ -109,7 +156,10 @@ public class ListIO {
 	}
 	public void createMusicList(JSONObject object){
 		BufferedWriter writer = null;
+		if(new File(object.getString("listPath")).exists())
+			return;
 		try {
+			System.out.println("create list   "+object.toString());
 			writer = new BufferedWriter(new FileWriter(object.getString("listPath")));
 			writer.write("[]");
 			writer.close();

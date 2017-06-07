@@ -8,9 +8,10 @@ import java.awt.event.MouseEvent;
 import cn.controller.listCtrl.Lists;
 import cn.controller.listener.KeyListener.MainKeyListener;
 import cn.controller.listener.MouseListener.*;
+import cn.controller.playCtrl.PlayController;
 import cn.driver.play.FlacDecode;
-import cn.driver.play.MP3PlayTest;
 import cn.driver.play.Play;
+import cn.driver.playTest.SoundBase;
 import cn.driver.showWave.Spectrum;
 import cn.gui.musicEntry.LocalMusicEntry;
 import cn.gui.musicList.LocalListTitle;
@@ -108,7 +109,7 @@ public class MainView extends JFrame{
 	 * 饿汉式单例模式，在类加载之间就已经实例化，保证了线程安全
 	 */
 	private static final MainView window = new MainView();
-
+	
 	boolean isPlaying = false;
 	/**
 	 * 主窗口的构造函数私有化，为单例模式
@@ -221,7 +222,6 @@ public class MainView extends JFrame{
 		layeredPane.add(jTree,JLayeredPane.PALETTE_LAYER);
 		jTree.setBounds(0, 30, 140, 230);
 		jTree.setOpaque(false);
-		 
 		Lists ls = new Lists();
 		JSONArray ja = ls.readLists();
 		for(int i=0;i<ja.size();i++){
@@ -248,7 +248,7 @@ public class MainView extends JFrame{
 		
 		final Spectrum spec = new Spectrum();
 		mainResult.add(spec);
-		new Thread(spec).start();  
+		new Thread(spec).start();
 	}
 	
 	/**
@@ -261,29 +261,31 @@ public class MainView extends JFrame{
 		playButton.setOpaque(false);
 		layeredPane.add(playButton,JLayeredPane.PALETTE_LAYER);
 		playButton.addMouseListener(new MouseAdapter() {
-
-			Play play;
+			PlayController pc = null;
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				LocalMusicEntry  temp = (LocalMusicEntry) getFocusOwner();
 				System.out.println("将要播放的音乐信息：    "+temp.getMusicJson().toString());
 				String path = temp.getMusicJson().getString("path");
+				pc = new PlayController(temp.getMusicJson());
 				if(e.getClickCount()==1 && !isPlaying){
 					if(path.endsWith(".mp3")){
-						play=new MP3PlayTest(path);
+						
+						pc.play();
+						System.out.println("ceshi1asdwefe");
+						//play=new MP3PlayTest(path);
 					}else if(path.endsWith(".flac")){
-						play=new FlacDecode(path);
 					}else{
-						play = new MP3PlayTest(path);
+						pc.play();
+						System.out.println("ceshi1asdwefe");
+						//play = new MP3PlayTest(path);
 					}
-					Thread p = new Thread(play);
-					p.start();
 					MainView.playButton.setIcon(new ImageIcon("image/play_click.png"));
 					isPlaying = true;
 				}else if(e.getClickCount()==1 && isPlaying){
 					MainView.playButton.setIcon(new ImageIcon("image/play.png"));
 					isPlaying = false;
-					play.stop();
+					pc.stop();
 				}
 			
 			}
@@ -317,13 +319,32 @@ public class MainView extends JFrame{
 		volumeButton.setIcon(volumeIcon);
 		volumeButton.setOpaque(false);
 		layeredPane.add(volumeButton,JLayeredPane.PALETTE_LAYER);
+		volumeButton.addMouseListener(new MouseAdapter() {
+			boolean isvisible = false;
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				if(e.getClickCount()==1 && !isvisible){
+					volumeSlider.setBounds(288, 150, 4, 70);
+					volumeSlider.setOpaque(false);
+					volumeSlider.setOrientation(SwingConstants.VERTICAL);
+					//volumeSlider.setPaintLabels(true);
+					volumeSlider.setSnapToTicks(true);
+					mainResult.add(volumeSlider,JLayeredPane.MODAL_LAYER);
+					mainResult.updateUI();
+					isvisible = true;
+					System.out.println("is visible");
+				}else if(e.getClickCount()==1 && isvisible){
+					mainResult.remove(volumeSlider);
+					mainResult.updateUI();
+					isvisible = false;
+					System.out.println("is not visualed");
+				}
+			}
+			
+		});
 		
-		volumeSlider.setBounds(428, 202, 3, 70);
-		volumeSlider.setOpaque(false);
-		volumeSlider.setOrientation(SwingConstants.VERTICAL);
-		volumeSlider.setPaintLabels(true);
-		volumeSlider.setSnapToTicks(true);
-		layeredPane.add(volumeSlider,JLayeredPane.MODAL_LAYER);
+		
 		
 	}
 	public static void setWindowVisible(boolean b){

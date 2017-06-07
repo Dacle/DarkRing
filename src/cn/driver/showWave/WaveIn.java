@@ -12,7 +12,7 @@ import javax.sound.sampled.TargetDataLine;
 public class WaveIn {  
     private AudioFormat af;  
     private DataLine.Info dli;  
-    private TargetDataLine tdl;  
+    private SourceDataLine tdl;  
   
     /** 
      * 打开音频目标数据行。从中读取音频数据格式为：采样率32kHz，每个样本16位，单声道，有符号的，little-endian。 
@@ -22,7 +22,7 @@ public class WaveIn {
         af = new AudioFormat(32000, 16, 1, true, false);  
         dli = new DataLine.Info(SourceDataLine.class, af);  
         try {  
-            tdl = (TargetDataLine) AudioSystem.getLine(dli);  
+            tdl = (SourceDataLine) AudioSystem.getLine(dli);  
             tdl.open(af, FFT.FFT_N << 1);  
         } catch (Exception e) {  
             e.printStackTrace();  
@@ -44,8 +44,8 @@ public class WaveIn {
         tdl.stop();  
     }  
       
-    public int read(byte[] b, int len) {  
-        return tdl.read(b, 0, len);  
+    public int write(byte[] b, int len) {  
+        return tdl.write(b, 0, len);  
     }  
       
     private double phase0 = 0;  

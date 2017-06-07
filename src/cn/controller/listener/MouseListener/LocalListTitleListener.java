@@ -17,11 +17,12 @@ public class LocalListTitleListener implements MouseListener{
 
 		JSONArray ja = null;
 		// TODO Auto-generated method stub
-		
+		Lists ls = new Lists();
 		LocalListTitle temp = (LocalListTitle) e.getComponent();
 		if(!MainView.isOpen){
-			Lists ls = new Lists();
+			System.out.println("表位置   "+temp.getObject().toString());
 			ja = ls.readMusicList(temp.getObject());
+			System.out.println("表内容   "+ja.toString());
 			MainView.lms = new LocalMusicList(ja);
 			MainView.jTree.add(MainView.lms,JLayeredPane.MODAL_LAYER);
 			MainView.lms.setBounds(0, (MainView.jTree.getComponentCount()-2)*20, 140, ja.size()*20);

@@ -108,6 +108,9 @@ public class LocalListTitle extends JMenuBar{
 				// TODO Auto-generated method stub
 				Musics musicInfo = new Musics();
 				JSONObject jo = musicInfo.getMusicInfo();
+				jo.put("listName", object.get("name"));
+				System.out.println("list   "+array);
+				System.out.println("list   "+object);
 				array.add(jo);
 				ls.updateMusicList(array, object);
 			}

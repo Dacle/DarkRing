@@ -156,7 +156,7 @@ public class Spectrum extends JComponent implements Runnable {
 				Thread.sleep(80);// 延时不准确,这不重要
 
 				// 从混音器录制数据并转换为short类型的PCM
-				wi.read(b, FFT.FFT_N << 1);
+				wi.write(b, FFT.FFT_N << 1);
 				//wi.getWave264(b, FFT.FFT_N << 1);//debug
 				for (i = j = 0; i != FFT.FFT_N; i++, j += 2)
 					realIO[i] = (b[j + 1] << 8) | (b[j] & 0xff); //signed short

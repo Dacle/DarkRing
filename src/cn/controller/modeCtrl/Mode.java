@@ -4,7 +4,7 @@ public class Mode {
 	/**
 	 * 顺序播放 default
 	 * 随机播放 rand 
-	 * 单曲循环 onecircle 
+	 * 单曲循环 onecircle
 	 * 列表循环 morecircle
 	 * 单曲播放 one
 	 */

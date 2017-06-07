@@ -44,6 +44,7 @@ public abstract class Player implements Play{
 		System.out.println("run play()  ");
 		
     	AudioFormat format = input.getFormat();
+		System.out.println("format "+format.toString());
     	DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		try {
 			sourceDataline =  (SourceDataLine) AudioSystem.getLine(info);
@@ -69,7 +70,7 @@ public abstract class Player implements Play{
 	    	System.out.println("²¥·Å¿ªÊ¼");
     		synchronized (lock){
 					try {
-						while((nBytesRead = input.read(abData, 0, abData.length)) != -1){
+						while((nBytesRead = input.read(abData, 0, abData.length))>0){
 							while (paused) {
 								if(sourceDataline.isRunning()){
 									sourceDataline.stop();
@@ -89,7 +90,7 @@ public abstract class Player implements Play{
 								sourceDataline.stop();
 								sourceDataline.close();
 							}
-							MainView.musicSlider.setValue((int)sourceDataline.getMicrosecondPosition());
+							MainView.musicSlider.setValue((int)sourceDataline.getMicrosecondPosition()/1000);
 							sourceDataline.write(abData, 0, nBytesRead);
 						}
 					} catch (IOException e) {
